@@ -1,0 +1,19 @@
+1. 0x74,'E','L','F'
+2. UIO_USERISPACE - user process code, process happenening at user space
+   UIO_USERSPACE - user process data, data transfer to kernel space
+3. Memory is read into a virtual address which the structs uio pointer points
+   to so the struct can be allocated on the stack.
+4. So that the file is closed, allowing other thread or processes to execute
+   the same program and open the file, also never closing the file will 
+   result in memory leak.
+5. enter_new_process(). yes.
+6. copyinout.c, memmove.c. copyin/out ensures user pointers dont access 
+   offlimit addresses which mommove cannot do.
+7. noting provided address must be in proper userspace region
+8. in os161-1.11/kern/arch/mips/include/trapframe.h the numerical value of the exception code for a MIPS system call is 8, EX_SYS 8.
+9. 
+10.4 bytes
+11.avoiding panic by the kernel when user-level code hits a fatal fault
+12.arguments past 4 would need to be fetched from user-level stack
+13.allows for a single shared system call dispatcher
+14.syscalls-mips.s, line 85, 'syscall' 
