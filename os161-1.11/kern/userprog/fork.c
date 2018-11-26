@@ -37,22 +37,24 @@ int sys_fork(struct trapframe* parenttf, int *ret){
 		splx(spl);
 		return ENOMEM;
 	}
-	
+	// copying trapframe
 	*childtf = *parenttf;
 
+	// copy address space
 	struct addrsspace* childas;
 	err = as_copy(curthread->t_addrspace,&childas);
 	if (err){
 		splx(spl);
 		return err;
 	}
-
-	err = thread_fork(curthread->t_name, enter_forked_p, childtf, (unsigned long) childas, &child);
+	// call threadfork
+	err = thread_fork(curthread->t_name, md_forkentry, childtf, (unsigned long) childas, &child);
 	if (err){
 		splx(spl);
 		return err;
 	}
 	
+	// fix here
 	proctable[child->pid]->parent_pid = curthread->pid;
 	*retv = (int) child->pid;
 	splx(spl);
@@ -60,18 +62,24 @@ int sys_fork(struct trapframe* parenttf, int *ret){
 	return 0;
 }
 
-void enter_forked_p(void* data, unsigned long unsignedlong){
+void md_forkentry(void* data, unsigned long unsignedlong){
+	// parent's trapframe and address space
 	struct trapframe *tf = (struct trapframe*) data;
 	struct addrspace *as = (struct addrspace*) unsignedlong;
-
+	
+	// create new child trapframe
 	struct trapframe stacktf;
 	stacktf = *tf;
 	stacktf.tf_a3 = 0;
+	// set the trapframe's tf_v0 to 0
 	stacktf.tf_v0 = 0;
+	// increment tf_epc by 4
 	stacktf_tf_epc +=4;
-
+	
+	// copy the passed address space to the current process address space and activate
 	as_copy(as,&curthread->t_addrspace);
 	as_activate(curthread->t_addrspace);
 	
+	// give control back to the usermode
 	mips_usermode(&stacktf);
 }
