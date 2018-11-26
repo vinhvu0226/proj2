@@ -8,6 +8,10 @@
 /* Get machine-dependent stuff */
 #include <machine/pcb.h>
 
+#define MAX_RUNNING_PROCESSES 256
+
+// global process array
+extern struct thread* proctable[];
 
 struct addrspace;
 
@@ -20,6 +24,8 @@ struct thread {
 	char *t_name;
 	const void *t_sleepaddr;
 	char *t_stack;
+	pid_t pid;
+	
 	
 	/**********************************************************/
 	/* Public thread members - can be used by other code      */

@@ -7,5 +7,7 @@
 
 int sys_reboot(int code);
 
+pid_t sys_getpid(int *ret);
 
+int sys_fork(struct trapframe* parenttf, int *ret);
 #endif /* _SYSCALL_H_ */
