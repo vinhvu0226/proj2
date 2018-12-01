@@ -1,0 +1,31 @@
+Design Document
+Vinh Vu
+Darena Soukkhaseum
+
+1. Process Structure
+	For our design, we aimed for simplicity in order to have as close to a full project
+	as possible. We chose to use the common hack of implementing the processes by adding 
+	necessary fields to the thread structure and treating it as a process.
+	- pid
+	- parentpid
+	- exit status
+	- exit code
+	- process lock
+	
+	We implemented a global process array (an array of threads) as our process table.
+	(extern struct thread* proctable[];)
+	
+	We defined a limit to our table to limit the amount of processes at one time at 256
+	(#define MAX_RUNNING_PROCESSES 256) which could be changed later. 
+	
+	Pids are chosen in thread_create by looping through the process array until an empty 
+	spot is found. Once a spot is found, the index of that spot becomes the process pid.
+	If no spot is found, we return an error.
+	
+	Answer this:
+	can two different user-level processes (or user-level threads, if you choose to 
+	implement them) find themselves running a system call at the same time?
+	
+2. Pros and Cons
+
+3. Alternatives
