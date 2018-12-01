@@ -25,8 +25,10 @@ struct thread {
 	const void *t_sleepaddr;
 	char *t_stack;
 	pid_t pid;
-	
-	
+	pid_t parentpid;
+	int exited;
+	int exitcode;	
+	struct lock *lk_p;
 	/**********************************************************/
 	/* Public thread members - can be used by other code      */
 	/**********************************************************/

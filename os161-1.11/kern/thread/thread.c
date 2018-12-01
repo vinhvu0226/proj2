@@ -13,6 +13,7 @@
 #include <addrspace.h>
 #include <vnode.h>
 #include "opt-synchprobs.h"
+#include <synch.h>
 
 /* States a thread can be in. */
 typedef enum {
@@ -64,10 +65,26 @@ thread_create(const char *name)
 	
 	// If you add things to the thread structure, be sure to initialize
 	// them here.
-	
-	// pid is null initially
-	thread->pid = NULL;
-	
+	if(proctable[2] == NULL){
+        	thread->parentpid = -5; //curthread->pid;//INIITS the default pid to negative for testing
+     	}else{
+        	thread->parentpid = curthread->pid;
+     	}
+	thread->exited = 0;
+	thread->exitcode = -1; //not been set and not exited
+	thread->lk_p = lock_create("process_lk");
+	pid_t mypid;
+	// pid
+	int i;
+	for (i=2; i<MAX_RUNNING_PROCESSES + 2;i++){
+		if (proctable[i] == NULL){
+			proctable[i] = thread;
+			mypid = i;
+			break;
+		}
+	}
+	if (mypid <0) return NULL;
+	thread->pid = mypid;
 	return thread;
 }
 

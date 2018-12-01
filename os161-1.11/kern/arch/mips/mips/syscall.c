@@ -6,6 +6,9 @@
 #include <machine/trapframe.h>
 #include <kern/callno.h>
 #include <syscall.h>
+#include <../../kern/include/types.h>
+#include <thread.h>
+
 
 
 /*
@@ -73,7 +76,26 @@ mips_syscall(struct trapframe *tf)
 		break;
 
 	    /* Add stuff here */
- 
+ 	    case SYS_fork:
+		err = sys_fork(tf, &retval);
+		break;
+
+	    case SYS_getpid:
+		err = sys_getpid(&retval);
+		break;
+/* THESE CAN BE ADDED ONCE MADE AND DEFINED IN SYSCALL.H
+	    case SYS_waitpid:
+		err = sys_waitpid((int) tf->tf_a0, (int*) tf->tf_a1, tf->tf_a2, &retval);
+		break;
+		
+	    case SYS_execv:
+		err = sys_execv((const char*) tf->tf_a0, (char**) tf->tf_a1, &retval);
+		break;
+
+	    case SYS__exit:
+		err = sys__exit((int)tf->tf_a0, &retval);
+		break;
+*/
 	    default:
 		kprintf("Unknown syscall %d\n", callno);
 		err = ENOSYS;
@@ -107,15 +129,3 @@ mips_syscall(struct trapframe *tf)
 	assert(curspl==0);
 }
 
-void
-md_forkentry(struct trapframe *tf)
-{
-	/*
-	 * This function is provided as a reminder. You need to write
-	 * both it and the code that calls it.
-	 *
-	 * Thus, you can trash it and do things another way if you prefer.
-	 */
-
-	(void)tf;
-}

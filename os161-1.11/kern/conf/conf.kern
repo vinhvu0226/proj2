@@ -383,6 +383,8 @@ file      main/hello.c
 file      userprog/loadelf.c
 file      userprog/runprogram.c
 file      userprog/uio.c
+file	  userprog/getpid.c
+file	  userprog/fork.c
 
 #
 # Virtual memory system
