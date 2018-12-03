@@ -31,7 +31,7 @@ kfree_all(char *args[])
  * Calls vfs_open on progname and thus may destroy it.
  */
 int
-execv(char *progname, char **args)
+sys_execv(char *progname, char **args)
 {
 	struct vnode *v;
 	vaddr_t entrypoint, stackptr;

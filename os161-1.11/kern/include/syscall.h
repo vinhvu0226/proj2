@@ -19,6 +19,7 @@ int sys_fork(struct trapframe* parenttf, int *ret);
 
 int sys_waitpid(int pid, int *status, int options, int *ret);
 
+int execv(char *progname, char **args);
 
 
 #endif /* _SYSCALL_H_ */
