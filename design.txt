@@ -2,7 +2,10 @@ Design Document
 Vinh Vu
 Darena Soukkhaseum
 
-1. Process Structure
+1. High Level Objective
+	The problem with o161 we are trying to address is the fact that the system has minimal support for running executables. It has very little support for multi-tasking. Multiple system calls that help constitute a multi-tasking OS are either missing or incomplete and it was our job to implement them.
+
+2. Process Structure
 	For our design, we aimed for simplicity in order to have as close to a full project
 	as possible. We chose to use the common hack of implementing the processes by adding 
 	necessary fields to the thread structure and treating it as a process.
@@ -26,10 +29,10 @@ Darena Soukkhaseum
 	can two different user-level processes (or user-level threads, if you choose to 
 	implement them) find themselves running a system call at the same time?
 	
-2. System call implementations
+3. System call implementations
 	a) sys_execv()
 	Execv.c references runprogram.c as a basis but should be modified to start processes properly.
-	Programs started by runprogram should contain stardard file descriptors available as opposed to their current unavailability.
+	Programs started by runprogram should contain standard file descriptors available as opposed to their current unavailability.
 	
 	Sys_execv() will take a new process, execute it, and replace the current existing address space with that of the new 			executable's.
 	
@@ -40,7 +43,13 @@ Darena Soukkhaseum
 		2) The executable is opened then an address space is created and the elf is loaded into it.
 		3) Execv copies arguments from kernel buffer into user stack
 		4) Once it is all finished it warps back to usermode using md_usermode
+		
 	
-3. Pros and Cons
+	
+4. Pros and Cons
+	Pros)
+		
+	Cons)
+		a) sys_execv() does not address all the error codes required. We could not figure out the 
 
-4. Alternatives
+5. Alternatives
