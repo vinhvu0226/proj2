@@ -23,5 +23,4 @@ int sys_execv(char *progname, char **args);
 int sys__exit(int code, int *ret);
 
 
-
 #endif /* _SYSCALL_H_ */
