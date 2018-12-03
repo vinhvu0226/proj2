@@ -1,19 +1,37 @@
 1. 0x74,'E','L','F'
+
 2. UIO_USERISPACE - user process code, process happenening at user space
    UIO_USERSPACE - user process data, data transfer to kernel space
+   We use UIO_SYSSPACE when reading or modifying the kernel buffer.
+   
 3. Memory is read into a virtual address which the structs uio pointer points
    to so the struct can be allocated on the stack.
-4. So that the file is closed, allowing other thread or processes to execute
+   
+4. During runprogram, we call vfs_open() to get the contents of the user program file.
+   The file must be closed eventually, allowing other thread or processes to execute
    the same program and open the file, also never closing the file will 
    result in memory leak.
+
 5. enter_new_process(). yes.
+// Vinh got:
+5. The function that forces the processor into usermode is md_usermode() and since it passes in argc and arv it is machine dependent because different systems handle this differently. MIPS does not require additional stack space or it.
+
+
 6. copyinout.c, memmove.c. copyin/out ensures user pointers dont access 
    offlimit addresses which mommove cannot do.
+   
 7. noting provided address must be in proper userspace region
+
 8. in os161-1.11/kern/arch/mips/include/trapframe.h the numerical value of the exception code for a MIPS system call is 8, EX_SYS 8.
-9. 
-10.4 bytes
+
+9. Can be calling an interrupt during the runtime of spl.c so everything should be done manually
+
+10.4 bytes, the retval is a 32 bit integer hence a 4 byte value.
+
 11.avoiding panic by the kernel when user-level code hits a fatal fault
-12.arguments past 4 would need to be fetched from user-level stack
+
+12.arguments past 4 would need to be fetched from user-level stack at sp+16
+
 13.allows for a single shared system call dispatcher
+
 14.syscalls-mips.s, line 85, 'syscall' 
