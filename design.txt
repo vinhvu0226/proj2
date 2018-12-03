@@ -26,6 +26,21 @@ Darena Soukkhaseum
 	can two different user-level processes (or user-level threads, if you choose to 
 	implement them) find themselves running a system call at the same time?
 	
-2. Pros and Cons
+2. System call implementations
+	a) sys_execv()
+	Execv.c references runprogram.c as a basis but should be modified to start processes properly.
+	Programs started by runprogram should contain stardard file descriptors available as opposed to their current unavailability.
+	
+	Sys_execv() will take a new process, execute it, and replace the current existing address space with that of the new 			executable's.
+	
+	Sys_execv() is, at its very core, runprogram() except it comes from userspace, goes into the ernel, and returns back to 		userspace while managing the memory that travels between the two spaces.
+	
+	Sys_execv() also takes an argument vector. The process is as such:
+		1) Sys_execv() copies arguments from user space into the kernel buffer. 
+		2) The executable is opened then an address space is created and the elf is loaded into it.
+		3) Execv copies arguments from kernel buffer into user stack
+		4) Once it is all finished it warps back to usermode using md_usermode
+	
+3. Pros and Cons
 
-3. Alternatives
+4. Alternatives
