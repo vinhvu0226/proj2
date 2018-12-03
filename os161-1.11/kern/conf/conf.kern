@@ -386,6 +386,8 @@ file      userprog/uio.c
 file	  userprog/getpid.c
 file	  userprog/fork.c
 file	  userprog/execv.c
+file	  userprog/waitpid.c
+file	  userprog/exit.c
 
 #
 # Virtual memory system

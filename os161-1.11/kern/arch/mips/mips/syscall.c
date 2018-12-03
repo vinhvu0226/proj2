@@ -54,7 +54,7 @@ mips_syscall(struct trapframe *tf)
 	int callno;
 	int32_t retval;
 	int err;
-	int i;
+	unsigned int i;
 	assert(curspl==0);
 
 	callno = tf->tf_v0;
@@ -90,19 +90,18 @@ mips_syscall(struct trapframe *tf)
 		}
 		break;
 
-/* THESE CAN BE ADDED ONCE MADE AND DEFINED IN SYSCALL.H
 	    case SYS_waitpid:
 		err = sys_waitpid((int) tf->tf_a0, (int*) tf->tf_a1, tf->tf_a2, &retval);
 		break;
-*/	
+	    
 	    case SYS_execv:
-		err = sys_execv((const char*) tf->tf_a0, (char**) tf->tf_a1);
+		err = sys_execv((char*) tf->tf_a0, (char**) tf->tf_a1);
 		break;
-/*
+
 	    case SYS__exit:
 		err = sys__exit((int)tf->tf_a0, &retval);
 		break;
-*/
+
 	    default:
 		kprintf("Unknown syscall %d\n", callno);
 		err = ENOSYS;
