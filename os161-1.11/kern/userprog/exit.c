@@ -14,7 +14,6 @@ int sys__exit(int code, int *ret){
 
 	lock_acquire(proctable[curthread->pid]->lk_p);
 	
-	//code = _MKWAIT_EXIT(code);
 	proctable[curthread->pid]->exitcode = code;
 	proctable[curthread->pid]->exited = 1;
 	int pid;

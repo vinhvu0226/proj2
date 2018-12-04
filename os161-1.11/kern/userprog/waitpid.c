@@ -10,26 +10,27 @@
 #include <test.h>
 #include <machine/trapframe.h>
 #include <synch.h>
+#include <machine/vm.h>
 
 int sys_waitpid(int pid, int *status, int options, int *ret){
 	(void)options;
 	int err;
 	
-	/* return error if pid is not valid... NEEDED?
+	//  return error if pid is not valid... NEEDED?
 	if (pid >= MAX_RUNNING_PROCESSES || pid < 0 || proctable[pid] == NULL ){
 		*ret = -1;
-		//return some error
-	}*/
+		return EFAULT;
+	}
 
 	// return error if status is an invalid pointer
 	if (status == NULL){
 		*ret = -1;
 		return EFAULT;
 	}
-	/*if ((vaddr_t)status >= (vaddr_t)USERSPACETOP) {
+	if ((vaddr_t)status >= (vaddr_t)USERTOP) {
 		*ret = -1;
 		return EFAULT;
-	}*/
+	}
 	if ((vaddr_t)status % 4 != 0){
 		*ret = -1;
 		return EFAULT;
@@ -41,10 +42,10 @@ int sys_waitpid(int pid, int *status, int options, int *ret){
 		return EINVAL;
 	}
 	// maybe not necessary
-	/*if (curthread->pid != proctable[pid]->parentpid){
-		ret* = -1;
-		return ECHILD;
-	}*/
+	if (curthread->pid != proctable[pid]->parentpid){
+		*ret = -1;
+		return EINVAL;
+	}
 
 	// wait for process with pid to exit
 	if (proctable[pid]->exited == 0){

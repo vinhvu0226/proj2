@@ -7,10 +7,29 @@
 int
 main(int argc, char *argv[])
 {
-	printf("%d) fork then print\n",1);
+	printf("\n%d) simple test for fork, getpid, and _exit\n",1);
+	int x;
 	pid_t pid;
+	pid_t pid2;
 	pid = fork();
-	printf("pid: %d\n",pid);
+
+	if (pid<0) {
+		warn("fork");
+	}
+
+	pid2 = getpid();
+	printf("fork return: %d\n",pid);
+	if (pid !=0){
+		printf("getpid parent pid: %d\n",pid2);
+	}
+	else if (pid == 0){
+		printf("get pid child pid: %d\n", pid2);
+		printf("%d)child exit here",2);
+		_exit(0);
+	}
+	
+
+	printf("this should only print %d time for parent since since child exited\n",1);
 	
 	return 0;
 }
