@@ -31,7 +31,7 @@ kfree_all(char *args[])
  * Calls vfs_open on progname and thus may destroy it.
  */
 int
-sys_execv(char *progname, char **args)
+execv(char *progname, char **args)
 {
 	struct vnode *v;
 	vaddr_t entrypoint, stackptr;
@@ -47,21 +47,26 @@ sys_execv(char *progname, char **args)
 		return result;
 	}
 
+    // if args don't exist, return EFAULT
     if(sizeof(args) == 0)
-        return ENOMEM;
+        return EFAULT;    
     num_args = sizeof(args)/sizeof(args[0]);
 
+    // if the args are not NULL terminated, then there is not
+    // enough memory allocated for them
     if(args[num_args-1] != NULL) {
         vfs_close(v);
         return ENOMEM;
     }
 
+    // If the args cannot be allocated theres something wrong with virtual mem
     args_in = (char **)kmalloc(sizeof(char**) * num_args);
     if (args_in==NULL)
 	{
 		return ENOMEM;
 	}
 
+    // allocate space for args that will go into kernel space
     int i;
     for (i=0; i<num_args; i++)
 	{
@@ -83,6 +88,7 @@ sys_execv(char *progname, char **args)
 
 	}
 
+    
     kprog = (char *) kmalloc(strlen(progname)+1);
     if (kprog==NULL)
     {
@@ -146,8 +152,10 @@ sys_execv(char *progname, char **args)
 		return ENOMEM;
 	}
 
+    
 	copy_addr = stackptr;
 
+    // copy out from kernel to userland
     int arg_length;
     int tail;
 	for (i=0; i<num_args; i++)
@@ -173,8 +181,6 @@ sys_execv(char *progname, char **args)
 
 	/* change name of current thread */
 	curthread->t_name = kprog;
-
-
 
 
 	/* Warp to user mode. */

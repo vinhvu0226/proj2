@@ -18,6 +18,8 @@
 
 // Queue of runnable threads
 static struct queue *runqueue;
+// Second queue addition
+static struct queue *newqueue;
 
 /*
  * Setup function
@@ -25,9 +27,15 @@ static struct queue *runqueue;
 void
 scheduler_bootstrap(void)
 {
+
+	// initialize second queue
 	runqueue = q_create(32);
+	newqueue = q_create(32);
 	if (runqueue == NULL) {
 		panic("scheduler: Could not create run queue\n");
+	}
+	else if (newqueue == NULL) {
+		panic("scheduler: Could not create second queue\n");
 	}
 }
 
