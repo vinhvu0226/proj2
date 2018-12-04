@@ -76,9 +76,11 @@ Darena Soukkhaseum
 	
 4. Pros and Cons
 	Pros)
-		
+		a) The logic is sound for the parts of the OS implementation we finished. The code is concise and takes a very linear 			route to its goal which results in quick execution
 	Cons)
-		a) sys_execv() does not address all the error codes required. We could not figure out the 
+		a) sys_execv() does not address all the error codes required. Overall the function is incomplete.
+		b) Scheduler.c is incomplete. The only part we implemented was initializing a second queue and bootstrapping it.
+
 
 5. Alternatives
 	An close alternative to our implementation would have been to design a separate 
