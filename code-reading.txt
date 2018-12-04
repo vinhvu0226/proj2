@@ -12,10 +12,7 @@
    the same program and open the file, also never closing the file will 
    result in memory leak.
 
-5. enter_new_process(). yes.
-// Vinh got:
 5. The function that forces the processor into usermode is md_usermode() and since it passes in argc and arv it is machine dependent because different systems handle this differently. MIPS does not require additional stack space or it.
-
 
 6. copyinout.c, memmove.c. copyin/out ensures user pointers dont access 
    offlimit addresses which mommove cannot do.

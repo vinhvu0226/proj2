@@ -25,10 +25,6 @@ Darena Soukkhaseum
 	spot is found. Once a spot is found, the index of that spot becomes the process pid.
 	If no spot is found, we return an error.
 	
-	Answer this:
-	can two different user-level processes (or user-level threads, if you choose to 
-	implement them) find themselves running a system call at the same time?
-	
 3. System call implementations
 	a) sys_execv()
 	Execv.c references runprogram.c as a basis but should be modified to start processes properly.
@@ -44,6 +40,38 @@ Darena Soukkhaseum
 		3) Execv copies arguments from kernel buffer into user stack
 		4) Once it is all finished it warps back to usermode using md_usermode
 		
+	b) sys_fork()
+	sys_fork follows these steps provided by the TA slides.
+		- create a pid when creating a new process. Add it to process table
+		- copy trapframe
+		- copy address space
+		- call thread_fork()
+		
+	It first starts by disabling all interrupts. Then it creates a struct thread and
+	struct trapframe to copy to. After the memory is allocated to the child trapframe, 
+	if the trapframe is NULL, it returns ENOMEM. Then the parent trapframe is copied to
+	the child trapframe and the current addressspace is copied to the child address space
+	using as_copy. Once this is all done, thread_fork is called.
+	
+	finally, we set the parent pid of the child to the current thread's pid.
+	
+	forkentry was implemented in fork.c according to the TA slides as well.
+	
+	c) sys_getpid()
+	sys_getpid() simply returns the pid of the current thread by:
+	*ret = curthread->pid;
+	
+	d) sys_waitpid()
+	sys_waitpid() first checks that the options argument and the status argument are both
+	valid. Then it waits for the process with the pid to exit and aquires the lock for 
+	that pid. The status is set using copyout and then the lock is released and destroyed
+	and the memory is freed for the process and its place in the array becomes NULL.
+	
+	e) sys__exit()
+	sys__exit begins by aquiring the current threads lock, then sets the exit code as well
+	as the exit status. Then it sets every child of the current thread's parentpid to
+	-1. Finally the lock is released and thread_exit() is called. 
+		
 	
 	
 4. Pros and Cons
@@ -53,3 +81,7 @@ Darena Soukkhaseum
 		a) sys_execv() does not address all the error codes required. We could not figure out the 
 
 5. Alternatives
+	An close alternative to our implementation would have been to design a separate 
+	process struct and a process array instead of treating threads as processes and 
+	making an array of threads. We decided against this because it was easier and quicker
+	to use the "common hack". 
