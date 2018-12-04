@@ -29,7 +29,7 @@ main(int argc, char *argv[])
 	}
 	
 
-	printf("this should only print %d time for parent since since child exited\n",1);
+	printf("this should only print %d time\n",1);
 	
 	return 0;
 }
